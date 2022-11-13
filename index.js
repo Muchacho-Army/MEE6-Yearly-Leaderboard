@@ -37,7 +37,7 @@ puppeteer.launch({
     await browser.close();
     console.log("Screenshot created")
 }).finally(async () => {
-    if (!today.getMonth() === 0) return;
+    if (!today.getMonth() == 0) return;
     dotenv.config();
     const resp = await fetch(`https://mee6.xyz/api/plugins/levels/do-reset/${SERVER_ID}`, {
         method: "POST",
