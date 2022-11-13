@@ -30,9 +30,8 @@ puppeteer.launch({
     }
 }).then(async (browser) => {
     const page = await browser.newPage();
-    await page.goto(`https://mee6.xyz/leaderboard/${SERVER_ID}`);
     if (!fs.existsSync(`${today.getFullYear()}`)) fs.mkdirSync(`${today.getFullYear()}`);
-    new Promise(resolve => setTimeout(resolve, 10000)); /* Wait for the page to be loaded */
+    await page.goto(`https://mee6.xyz/leaderboard/${SERVER_ID}`, { waitUntil: ["load", "domcontentloaded"] });
     await page.screenshot({ path: path.join(`${today.getFullYear()}`, `${months[today.getMonth()]}.png`) });
     await browser.close();
     console.log("Screenshot created")
