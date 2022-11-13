@@ -1,8 +1,6 @@
 name: Get the current leaderboard and reset leaderboard
 
 on:
-  push:
-  workflow_dispatch:
   schedule:
     - cron: "0 0 1 * *"
 
