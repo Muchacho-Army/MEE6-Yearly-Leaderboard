@@ -1,0 +1,14 @@
+{
+  "name": "mee6-yearly-leaderboard",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "node-fetch": "^3.3.0",
+    "puppeteer": "^19.2.2"
+  }
+}
