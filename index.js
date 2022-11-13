@@ -41,7 +41,8 @@ puppeteer.launch({
     const page = await browser.newPage();
     const [year, month] = yearMonth();
     if (!fs.existsSync(`${year}`)) fs.mkdirSync(`${year}`);
-    await page.goto(`https://mee6.xyz/leaderboard/${SERVER_ID}`, { waitUntil: ["load", "domcontentloaded"] });
+    await page.goto(`https://mee6.xyz/leaderboard/${SERVER_ID}`);
+    await page.waitForXPath("/html/body/div[1]/div[2]/div[3]/div[1]/div"); /* Leaderboard Element */
     await page.screenshot({ path: path.join(`${year}`, `${month}.png`) });
     await browser.close();
     console.log("Screenshot created")
