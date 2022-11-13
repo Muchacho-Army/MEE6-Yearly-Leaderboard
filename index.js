@@ -22,6 +22,15 @@ const months = {
 };
 
 const today = new Date();
+const yearMonth = () => {
+    let month = today.getMonth() - 1;
+    let year = today.getFullYear();
+    if (month == -1) {
+        month = 11;
+        year = year - 1;
+    }
+    return [year, months[month]];
+};
 
 puppeteer.launch({
     defaultViewport: {
@@ -30,9 +39,10 @@ puppeteer.launch({
     }
 }).then(async (browser) => {
     const page = await browser.newPage();
-    if (!fs.existsSync(`${today.getFullYear()}`)) fs.mkdirSync(`${today.getFullYear()}`);
+    const [year, month] = yearMonth();
+    if (!fs.existsSync(`${year}`)) fs.mkdirSync(`${year}`);
     await page.goto(`https://mee6.xyz/leaderboard/${SERVER_ID}`, { waitUntil: ["load", "domcontentloaded"] });
-    await page.screenshot({ path: path.join(`${today.getFullYear()}`, `${months[today.getMonth()]}.png`) });
+    await page.screenshot({ path: path.join(`${year}`, `${month}.png`) });
     await browser.close();
     console.log("Screenshot created")
 }).finally(async () => {
@@ -42,6 +52,6 @@ puppeteer.launch({
         method: "POST",
         headers: { "Authorization": process.env.MEE6_TOKEN }
     });
-    if (resp.ok) console.log("Dashboard resetted");
+    if (resp.ok) console.log("Leaderboard resetted");
     else throw new Error(resp.statusText);
 });
