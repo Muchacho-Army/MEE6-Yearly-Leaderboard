@@ -1,0 +1,43 @@
+name: Get the current leaderboard and reset leaderboard
+
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 1 * *"
+
+jobs:
+  do-stuff:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clean working directory
+        run: rm -rf /home/runner/work/${{ github.repository }}
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.x
+
+      - name: Setup env
+        run: |
+          echo "MEE6_TOKEN = ${{ secrets.MEE6_TOKEN }}" >> .env
+
+      - name: Install dependencies
+        run: |
+          npm i
+
+      - name: Create screenshot and reset leaderboard
+        run: |
+          npm start
+
+      - name: Push
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit -m "Updated Leaderboard" || exit 0
+          git push
