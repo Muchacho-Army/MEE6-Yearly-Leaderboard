@@ -1,17 +1,15 @@
-name: Get the current leaderboard and reset leaderboard
+name: Get latest leaderboard
 
 on:
   schedule:
     - cron: "0 0 1 * *"
+  workflow_dispatch:
 
 jobs:
   do-stuff:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clean working directory
-        run: rm -rf /home/runner/work/${{ github.repository }}
-
       - name: Checkout code
         uses: actions/checkout@v2
           
@@ -28,7 +26,7 @@ jobs:
         run: |
           npm i
 
-      - name: Create screenshot and reset leaderboard
+      - name: Create screenshot
         run: |
           npm start
 
