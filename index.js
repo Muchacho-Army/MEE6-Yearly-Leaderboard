@@ -35,7 +35,7 @@ const yearMonth = () => {
 puppeteer.launch({
     defaultViewport: {
         width: 960,
-        height: 1530
+        height: 1569
     }
 }).then(async (browser) => {
     const page = await browser.newPage();
