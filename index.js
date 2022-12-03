@@ -1,10 +1,13 @@
 const fs = require("fs");
 const path = require("path");
-const puppeteer = require("puppeteer");
-const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
 const dotenv = require("dotenv");
+const puppeteer = require("puppeteer");
+const FormData = require("form-data");
+const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
+dotenv.config();
 const SERVER_ID = "446997274132873220";
+const { WEBHOOK_URL, MEE6_TOKEN } = process.env;
 
 const months = {
     "0": "Januar",
@@ -46,12 +49,28 @@ puppeteer.launch({
     await page.screenshot({ path: path.join(`${year}`, `${month}.png`) });
     await browser.close();
     console.log("Screenshot created")
+    const form = new FormData();
+    form.append("file", fs.readFileSync(path.join(`${year}`, `${month}.png`)), `${month}.png`);
+    form.append("payload_json", JSON.stringify({
+        embeds: [{
+            title: `Leaderboard für ${month} ${year}`,
+            color: 38655, /* #0096ff */
+            image: {
+                url: `attachment://${month}.png`
+            }
+        }]
+    }));
+    fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: form.getHeaders(),
+        body: form
+    });
+    console.log("Webhook sent")
 }).finally(async () => {
     if (!today.getMonth() == 0) return;
-    dotenv.config();
     const resp = await fetch(`https://mee6.xyz/api/plugins/levels/do-reset/${SERVER_ID}`, {
         method: "POST",
-        headers: { "Authorization": process.env.MEE6_TOKEN }
+        headers: { "Authorization": MEE6_TOKEN }
     });
     if (resp.ok) console.log("Leaderboard resetted");
     else throw new Error(resp.statusText);
