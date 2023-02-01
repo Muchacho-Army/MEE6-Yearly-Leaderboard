@@ -9,23 +9,23 @@ dotenv.config();
 const SERVER_ID = "446997274132873220";
 const { WEBHOOK_URL, MEE6_TOKEN } = process.env;
 
-const months = {
-    "0": "Januar",
-    "1": "Februar",
-    "2": "März",
-    "3": "April",
-    "4": "Mai",
-    "5": "Juni",
-    "6": "Juli",
-    "7": "August",
-    "8": "September",
-    "9": "Oktober",
-    "10": "November",
-    "11": "Dezember"
-};
+const months = [
+    "Januar",
+    "Februar",
+    "März",
+    "April",
+    "Mai",
+    "Juni",
+    "Juli",
+    "August",
+    "September",
+    "Oktober",
+    "November",
+    "Dezember"
+];
 
 const today = new Date();
-const yearMonth = () => {
+const getMonthAndYear = () => {
     let month = today.getMonth() - 1;
     let year = today.getFullYear();
     if (month == -1) {
@@ -42,10 +42,10 @@ puppeteer.launch({
     }
 }).then(async (browser) => {
     const page = await browser.newPage();
-    const [year, month] = yearMonth();
+    const [year, month] = getMonthAndYear();
     if (!fs.existsSync(`${year}`)) fs.mkdirSync(`${year}`);
     await page.goto(`https://mee6.xyz/leaderboard/${SERVER_ID}`);
-    await page.waitForXPath("/html/body/div[1]/div[2]/div[3]/div[1]/div"); /* Leaderboard Element */
+    await page.waitForXPath("//*[@id='leaderboard.top100']"); /* Leaderboard Element */
     await page.screenshot({ path: path.join(`${year}`, `${month}.png`) });
     await browser.close();
     console.log("Screenshot created")
