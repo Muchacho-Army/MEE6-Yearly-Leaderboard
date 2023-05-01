@@ -26,7 +26,7 @@ const months = [
 
 const today = new Date();
 const getMonthAndYear = () => {
-    let month = today.getMonth() - 1;
+    let month = today.getMonth();
     let year = today.getFullYear();
     if (month == -1) {
         month = 11;
@@ -50,13 +50,13 @@ puppeteer.launch({
     await browser.close();
     console.log("Screenshot created")
     const form = new FormData();
-    form.append("file", fs.readFileSync(path.join(`${year}`, `${month}.png`)), `${month}.png`);
+    form.append("file", fs.readFileSync(path.join(`${year}`, `${month}.png`)), `${month.split(" ")[1]}.png`);
     form.append("payload_json", JSON.stringify({
         embeds: [{
-            title: `Leaderboard für ${month} ${year}`,
+            title: `Leaderboard für ${month.split(" ")[1]} ${year}`,
             color: 38655, /* #0096ff */
             image: {
-                url: `attachment://${month}.png`
+                url: `attachment://${month.split(" ")[1]}.png`
             }
         }]
     }));
