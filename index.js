@@ -26,7 +26,7 @@ const months = [
 
 const today = new Date();
 const getMonthAndYear = () => {
-    let month = today.getMonth();
+    let month = today.getMonth() - 1;
     let year = today.getFullYear();
     if (month == -1) {
         month = 11;
