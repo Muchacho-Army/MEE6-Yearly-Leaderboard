@@ -50,13 +50,14 @@ puppeteer.launch({
     await browser.close();
     console.log("Screenshot created")
     const form = new FormData();
-    form.append("file", fs.readFileSync(path.join(`${year}`, `${month}.png`)), `${month.split(" ")[1]}.png`);
+    const attachmentName = `${month.split(" ")[1].replace("ä", "ae")}.png`
+    form.append("file", fs.readFileSync(path.join(`${year}`, `${month}.png`)), attachmentName);
     form.append("payload_json", JSON.stringify({
         embeds: [{
             title: `Leaderboard für ${month.split(" ")[1]} ${year}`,
             color: 38655, /* #0096ff */
             image: {
-                url: `attachment://${month.split(" ")[1]}.png`
+                url: `attachment://${attachmentName}`
             }
         }]
     }));
