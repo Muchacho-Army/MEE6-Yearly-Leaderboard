@@ -3,7 +3,7 @@ const path = require("path");
 const dotenv = require("dotenv");
 const puppeteer = require("puppeteer");
 const FormData = require("form-data");
-const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
+// const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 dotenv.config();
 const SERVER_ID = "446997274132873220";
@@ -42,13 +42,32 @@ puppeteer.launch({
     }
 }).then(async (browser) => {
     const page = await browser.newPage();
+
     const [year, month] = getMonthAndYear();
     if (!fs.existsSync(`${year}`)) fs.mkdirSync(`${year}`);
+
     await page.goto(`https://mee6.xyz/leaderboard/${SERVER_ID}`);
-    await page.waitForXPath("//*[@id='root']/div[3]/div/div[1]"); /* Leaderboard Element */
+
+    await page.waitForSelector("xpath///*[@id='root']/div[3]/div/div[1]"); /* Leaderboard Element */
+    await page.waitForNetworkIdle();
+
+    const filters = [
+        "xpath///*[@id='root']/div[2]/div/div[2]", // Navbar Buttons
+        "xpath///*[@id='root']/div[3]/div/div[1]/div[3]/button", // Join Button
+        "xpath///*[contains(@id, 'howItWorks')]", // How it works
+        "xpath///*[contains(@class, 'cky')]", // Cookie Notice
+        "xpath///*[contains(@id, 'ad')]", // Ads
+    ]
+    for (const f of filters) {
+        const elements = await page.$$(f);
+        for (const element of elements)
+            await page.evaluate((element) => element.remove(), element);
+    }
+
     await page.screenshot({ path: path.join(`${year}`, `${month}.png`) });
     await browser.close();
     console.log("Screenshot created")
+
     const form = new FormData();
     const attachmentName = `${month.split(" ")[1].replace("ä", "ae")}.png`
     form.append("file", fs.readFileSync(path.join(`${year}`, `${month}.png`)), attachmentName);
