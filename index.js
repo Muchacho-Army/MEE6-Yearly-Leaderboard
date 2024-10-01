@@ -3,7 +3,6 @@ const path = require("path");
 const dotenv = require("dotenv");
 const puppeteer = require("puppeteer");
 const FormData = require("form-data");
-// const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 dotenv.config();
 const SERVER_ID = "446997274132873220";
@@ -38,7 +37,7 @@ const getMonthAndYear = () => {
 puppeteer.launch({
     defaultViewport: {
         width: 960,
-        height: 1569
+        height: 1095
     }
 }).then(async (browser) => {
     const page = await browser.newPage();
@@ -57,6 +56,7 @@ puppeteer.launch({
         "xpath///*[contains(@id, 'howItWorks')]", // How it works
         "xpath///*[contains(@class, 'cky')]", // Cookie Notice
         "xpath///*[contains(@id, 'ad')]", // Ads
+        "xpath///*[contains(@class, 'bg-gradient-ai')]", // AI Ad
     ]
     for (const f of filters) {
         const elements = await page.$$(f);
